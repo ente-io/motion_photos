@@ -1,0 +1,22 @@
+#!/bin/sh
+
+echo "\033[36m
+======================================================================
+Running Commit message syntax check
+======================================================================"
+
+commit_regex='^(feat|fix|build|chore|docs|style|refactor|perf|test|init)(\(.+\))?!?: (.+[^.\r\n])([\r\n]+(.+[\r\n]+)+)?$'
+
+
+if ! grep -iqE "${commit_regex}" "$1"; then
+    echo "
+Please follow the below convention when writing your commit message
+    <type>[optional scope]: <description>
+    [optional body]
+    [optional footer(s)]"
+    echo "\033[31m 
+======================================================================
+Error in Commit message syntax check
+======================================================================" >&2
+    exit 1
+fi

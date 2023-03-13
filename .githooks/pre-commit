@@ -1,0 +1,8 @@
+#!/bin/sh
+
+echo "Run Formatter..."
+dart format --set-exit-if-changed .
+
+echo "Run Analyzer..."
+flutter analyze || { echo "flutter analyze error"; exit 1; }
+
