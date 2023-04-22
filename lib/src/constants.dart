@@ -1,13 +1,19 @@
 ///This class wraps all the constant values used in the Motion Photo Package
 class MotionPhotoConstants {
-  ///[fileTypeKey] XMP Key for a File Type
-  static String fileTypeKey = 'Item:Semantic';
+  ///[fileTypeKeys] XMP Key for a File Type
+  static List<String> fileTypeKeys = [
+    'GCamera:MotionPhoto',
+    'GCamera:MicroVideo'
+  ];
+
+  ///[fileOffsetKeys] XMP Key for a Motion Photo Video Offset
+  static List<String> fileOffsetKeys = [
+    'Item:Length',
+    'GCamera:MicroVideoOffset'
+  ];
 
   ///[fileTypeKey] XMP Key for a Motion Photo Video Size
   static String fileSizeKey = 'Item:Size';
-
-  ///[fileOffsetKey] XMP Key for a Motion Photo Video Offset
-  static String fileOffsetKey = 'Item:Length';
 
   ///[motionPhoto] XMP Value for a File of Type Motion Photo
   static String motionPhoto = 'MotionPhoto';

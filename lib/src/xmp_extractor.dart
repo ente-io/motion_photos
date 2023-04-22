@@ -22,18 +22,15 @@ class XMPExtractor {
 
       ///end index of xmpmeta tag in the buffer
       int offsetEnd = buffer.indexOf(MotionPhotoConstants.markerEnd);
-
       if (offsetBegin != -1 || offsetEnd != -1) {
         var xmlBuffer = buffer.substring(
             offsetBegin, offsetEnd + MotionPhotoConstants.markerEnd.length);
-
         //create xml of the xmp buffer
         XmlDocument xml;
         xml = XmlDocument.parse(xmlBuffer);
 
         //retrive all the rdf tags
         var rdfDescription = xml.descendants.whereType<XmlElement>().toList();
-
         //extract all rdf key value pairs
         for (var element in rdfDescription) {
           _addAttribute(result, element);

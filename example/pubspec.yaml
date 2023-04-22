@@ -33,7 +33,7 @@ dependencies:
   motion_photos:
     path: ../
   path_provider:
-  image_picker: ^0.8.7
+  file_picker: ^5.2.6
   video_player: ^2.6.0
 
   # The following adds the Cupertino Icons font to your application.

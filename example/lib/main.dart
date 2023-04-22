@@ -1,5 +1,7 @@
+import 'dart:developer';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:motion_photos/motion_photos.dart';
 import 'dart:io';
 import 'package:video_player/video_player.dart';
@@ -34,23 +36,32 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  var _path = '';
   late String directory;
   List file = List.empty(growable: true);
   late VideoPlayerController _controller;
+  late MotionPhotos motionPhotos;
+  bool isPicked = false;
 
   Future<void> _pickFromGallery() async {
-    final picker = ImagePicker();
-    final imageFile = await picker.pickImage(source: ImageSource.gallery);
-    setState(() {
-      _path = imageFile!.path;
-    });
+    FilePickerResult? result;
+    try {
+      result = await FilePicker.platform.pickFiles(
+        type: FileType.any,
+      );
+      final path = result!.paths[0]!;
+      motionPhotos = MotionPhotos(path);
+      setState(() {
+        isPicked = true;
+      });
+    } catch (e) {
+      log('Exep: ****$e***');
+    }
   }
 
   Future<Widget> _playVideo() async {
-    if (_path.isNotEmpty) {
+    if (isPicked) {
       try {
-        File file = await MotionPhotos().getMotionVideoFile(_path);
+        File file = await motionPhotos.getMotionVideoFile();
         _controller = VideoPlayerController.file(file);
         _controller.initialize();
         _controller.setLooping(true);
@@ -64,25 +75,31 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   String printIsMotionPhoto() {
-    try {
-      final isMotionPhoto = MotionPhotos().isMotionPhoto(_path);
-      return isMotionPhoto.toString();
-    } catch (e) {
-      return e.toString();
+    if (isPicked) {
+      try {
+        final isMotionPhoto = motionPhotos.isMotionPhoto();
+        return isMotionPhoto.toString();
+      } catch (e) {
+        return e.toString();
+      }
     }
+    return 'TBA';
   }
 
   String printVideoIndex() {
-    try {
-      final vidIndex = MotionPhotos().getMotionVideoIndex(_path);
-      return '''
+    if (isPicked) {
+      try {
+        final vidIndex = motionPhotos.getMotionVideoIndex();
+        return '''
     Start Index: ${vidIndex.startIndex}
     End Index: ${vidIndex.endIndex}
     Video Size: ${vidIndex.videoLength}
     ''';
-    } catch (e) {
-      return e.toString();
+      } catch (e) {
+        return e.toString();
+      }
     }
+    return 'TBA';
   }
 
   @override
@@ -105,7 +122,7 @@ class _MyHomePageState extends State<MyHomePage> {
             children: [
               Center(
                   child: Text(
-                'Is MotionPhoto: ${_path.isEmpty ? false : printIsMotionPhoto()}',
+                'Is MotionPhoto: ${printIsMotionPhoto()}',
                 style:
                     const TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
               )),
@@ -116,7 +133,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     const Text('MotionPhoto VideoIndex',
                         style: TextStyle(
                             fontSize: 18, fontWeight: FontWeight.w800)),
-                    Text(_path.isEmpty ? '' : printVideoIndex()),
+                    Text(printVideoIndex()),
                   ])),
               Center(
                 child: Container(

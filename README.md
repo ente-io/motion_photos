@@ -48,26 +48,61 @@ To use this package:
     ```
 * Code
     ```dart
+    class MyApp extends StatelessWidget {
+    const MyApp({super.key});
+
+    // This widget is the root of your application.
+    @override
+    Widget build(BuildContext context) {
+        return MaterialApp(
+        title: 'MotionPhotos Example',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+            primarySwatch: Colors.deepPurple,
+        ),
+        home: const MyHomePage(title: 'MotionPhotos Example'),
+        );
+    }
+    }
+
+    class MyHomePage extends StatefulWidget {
+    const MyHomePage({super.key, required this.title});
+    final String title;
+
+    @override
+    State<MyHomePage> createState() => _MyHomePageState();
+    }
+
     class _MyHomePageState extends State<MyHomePage> {
-    var _path = '';
     late String directory;
     List file = List.empty(growable: true);
     late VideoPlayerController _controller;
+    late MotionPhotos motionPhotos;
+    bool isPicked = false;
 
     Future<void> _pickFromGallery() async {
-        final picker = ImagePicker();
-        final imageFile = await picker.pickImage(source: ImageSource.gallery);
+        FilePickerResult? result;
+        try {
+        result = await FilePicker.platform.pickFiles(
+            type: FileType.any,
+        );
+        final path = result!.paths[0]!;
+        motionPhotos = MotionPhotos(path);
         setState(() {
-        _path = imageFile!.path;
+            isPicked = true;
         });
+        } catch (e) {
+        log('Exep: ****$e***');
+        }
     }
 
     Future<Widget> _playVideo() async {
-        if (_path.isNotEmpty) {
+        if (isPicked) {
         try {
-            File file = await MotionPhotos().getMotionVideoFile(_path);
+            File file = await motionPhotos.getMotionVideoFile();
             _controller = VideoPlayerController.file(file);
             _controller.initialize();
+            _controller.setLooping(true);
             _controller.play();
             return VideoPlayer(_controller);
         } catch (e) {
@@ -78,25 +113,31 @@ To use this package:
     }
 
     String printIsMotionPhoto() {
+        if (isPicked) {
         try {
-        final isMotionPhoto = MotionPhotos().isMotionPhoto(_path);
-        return isMotionPhoto.toString();
+            final isMotionPhoto = motionPhotos.isMotionPhoto();
+            return isMotionPhoto.toString();
         } catch (e) {
-        return e.toString();
+            return e.toString();
         }
+        }
+        return 'TBA';
     }
 
     String printVideoIndex() {
+        if (isPicked) {
         try {
-        final vidIndex = MotionPhotos().getMotionVideoIndex(_path);
-        return '''
+            final vidIndex = motionPhotos.getMotionVideoIndex();
+            return '''
         Start Index: ${vidIndex.startIndex}
         End Index: ${vidIndex.endIndex}
         Video Size: ${vidIndex.videoLength}
         ''';
         } catch (e) {
-        return e.toString();
+            return e.toString();
         }
+        }
+        return 'TBA';
     }
 
     @override
@@ -119,7 +160,7 @@ To use this package:
                 children: [
                 Center(
                     child: Text(
-                    'Is MotionPhoto: ${_path.isEmpty ? false : printIsMotionPhoto()}',
+                    'Is MotionPhoto: ${printIsMotionPhoto()}',
                     style:
                         const TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
                 )),
@@ -130,7 +171,7 @@ To use this package:
                         const Text('MotionPhoto VideoIndex',
                             style: TextStyle(
                                 fontSize: 18, fontWeight: FontWeight.w800)),
-                        Text(_path.isEmpty ? '' : printVideoIndex()),
+                        Text(printVideoIndex()),
                     ])),
                 Center(
                     child: Container(
@@ -157,8 +198,8 @@ To use this package:
                 child: const Icon(Icons.image),
             ),
             ));
-    }
-    }
+         }
+        }
     ```
 ## DataTypes Descriptions
 
@@ -179,6 +220,10 @@ To use this package:
 
 A Motion Photo file consists of two parts, a still image and video. Usually, the image is at the start of the file and the video is towards the end. Usually named as `IMG_XXXX_XXXX_MP.jpeg`
 
-The package reads for the XMP data of the File to detect wheather it is a motion photo and also extracts the video offset to process and retrive the video content of the File in a mp4 format.
+We use two methods to detect and extract motionphoto details:
+
+* Reads the XMP data of the File to detect whether it is a motion photo and also extracts the video offset to process and retrive the video content of the File in a mp4 format.
+
+* Traverses the bytes in the File and checks if it contains a mp4 pattern using boyermoore_search algorithm and also extracts the video offset to process and retrive the video content of the File in a mp4 format.(This is useful in detecting heif file formats).
 
 
