@@ -6,3 +6,5 @@ dart format --set-exit-if-changed .
 echo "Run Analyzer..."
 flutter analyze || { echo "flutter analyze error"; exit 1; }
 
+echo "Run Tests..."
+flutter test || { echo "flutter test error"; exit 1; }

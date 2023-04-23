@@ -11,4 +11,21 @@ class VideoIndex {
   final int videoLength;
 
   const VideoIndex(this.startIndex, this.endIndex, this.videoLength);
+
+  @override
+  String toString() =>
+      'Result{startIndex: $startIndex, endIndex: $endIndex, videoLength: $videoLength}';
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is VideoIndex &&
+          runtimeType == other.runtimeType &&
+          startIndex == other.startIndex &&
+          endIndex == other.endIndex &&
+          videoLength == other.videoLength;
+
+  @override
+  int get hashCode =>
+      startIndex.hashCode ^ endIndex.hashCode ^ videoLength.hashCode;
 }
