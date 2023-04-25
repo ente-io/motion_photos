@@ -39,8 +39,9 @@ class MotionPhotoHelpers {
     } catch (e) {
       log(e.toString());
     }
-    if (method1) return 1;
     if (method2) return 2;
+    if (method1) return 1;
+
     return 0;
   }
 

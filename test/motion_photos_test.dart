@@ -31,7 +31,7 @@ void main() {
     test('HEIF MotionPhoto', () async {
       final motionPhotos = MotionPhotos('assets/motionphoto.heic');
       final actualResult = motionPhotos.getMotionVideoIndex();
-      const expectedResult = VideoIndex(2749488, 5755343, 3005855);
+      const expectedResult = VideoIndex(1455411, 3649069, 2193658);
       expect(actualResult, expectedResult);
     });
 
