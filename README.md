@@ -84,7 +84,9 @@ To use this package:
         FilePickerResult? result;
         try {
         result = await FilePicker.platform.pickFiles(
-            type: FileType.any,
+          type: FileType.image,
+          allowMultiple: false,
+          allowCompression: false,
         );
         final path = result!.paths[0]!;
         motionPhotos = MotionPhotos(path);
@@ -205,7 +207,7 @@ To use this package:
 
   Types                |   Fields            | 
 --------------------   | ------------------  | 
-`VideoIndex`  | <p>**int** `startIndex` [start index of video in buffer]</p> <p>**int** `endIndex` [end index of video in buffer]</p>  <p>**int** `videoLength` [length of the video in buffer] </p>  |
+`VideoIndex`  | <p>**int** `start` [start index of video in buffer]</p> <p>**int** `end` [end index of video in buffer]</p>  <p>**int** `videoLength` [length of the video in buffer] </p>  |
 
 ## Method Descriptions
 
@@ -224,6 +226,6 @@ We use two methods to detect and extract motionphoto details:
 
 * Reads the XMP data of the File to detect whether it is a motion photo and also extracts the video offset to process and retrive the video content of the File in a mp4 format.
 
-* Traverses the bytes in the File and checks if it contains a mp4 pattern using boyermoore_search algorithm and also extracts the video offset to process and retrive the video content of the File in a mp4 format.(This is useful in detecting heif file formats).
+* Traverses the bytes in the File and checks if it contains a mp4 pattern header using boyermoore_search algorithm and also extracts the video offset to process and retrive the video content of the File in a mp4 format.(This is useful in detecting heif file formats).
 
 

@@ -2,65 +2,71 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:motion_photos/src/boyermoore_search.dart';
+import 'package:motion_photos/src/constants.dart';
 import 'package:motion_photos/src/helpers.dart';
 import 'package:motion_photos/src/video_index.dart';
 import 'package:path_provider/path_provider.dart';
-
-import 'constants.dart';
 
 ///This class is responsible for classifying a file as motion photo,
 ///if so, extracts the [VideoIndex] from the motion photo.
 ///extracts the VideoContent of the motion photo.
 class MotionPhotos {
-  late Uint8List buffer;
+  final String filePath;
+  bool bufferLoaded = false;
+  late Uint8List _buffer;
 
-  ///This Method initializes the [extractor] object
-  ///which is responsible for extracting the XMP data
-  ///from the motion photo
-  MotionPhotos(String filePath) {
-    buffer = MotionPhotoHelpers.pathToBytes(filePath);
+  MotionPhotos(this.filePath);
+
+  void loadBuffer() {
+    if (!bufferLoaded) {
+      _buffer = MotionPhotoHelpers.pathToBytes(filePath);
+      bufferLoaded = true;
+    }
   }
 
-  ///This Method takes [filePath] as parameter
-  ///extracts the XMP data of the file
-  ///returns wheather the file is a motion photo or not
+  /// isMotionPhoto returns true if the file is a motion photo
   bool isMotionPhoto() {
     try {
+      loadBuffer();
       return getMotionVideoIndex() != null;
     } catch (e) {
       return false;
     }
   }
 
-  ///This Method takes [filePath] as parameter
-  ///extracts the XMP data of the file
-  ///returns [VideoIndex] of the motion photo
+  // getMotionVideoIndex returns the [VideoIndex] of the photo if it's a motion photo
+  // otherwise returns null
   VideoIndex? getMotionVideoIndex() {
+    loadBuffer();
     // Note: The order of the following methods is important
     // We need to check for MP4 header, then XMP.
     final int mp4Index =
-        boyerMooreSearch(buffer, MotionPhotoConstants.mp4HeaderPattern);
+        boyerMooreSearch(_buffer, MotionPhotoConstants.mp4HeaderPattern);
     if (mp4Index != -1) {
-      return VideoIndex(start: mp4Index, end: buffer.lengthInBytes);
+      return VideoIndex(start: mp4Index, end: _buffer.lengthInBytes);
     }
-    return MotionPhotoHelpers.extractVideoIndexFromXMP(buffer);
+    return MotionPhotoHelpers.extractVideoIndexFromXMP(_buffer);
   }
 
-  ///This Method takes [filePath] as parameter
-  ///extracts the XMP data and [VideoIndex] of the file
-  ///returns [Uint8List] bytes for the video content of
-  ///the motion photo
-  Uint8List getMotionVideo() {
-    final indexes = getMotionVideoIndex()!;
-    return buffer.buffer.asUint8List(indexes.start, indexes.videoLength);
+  // getMotionVideo returns the video portion of the motion photo.
+  // If [index] is not provided, it will be extracted from the file at given {filePath}.
+  Uint8List getMotionVideo({VideoIndex? index}) {
+    final videoIndex = index ?? getMotionVideoIndex();
+    if (videoIndex == null) {
+      throw Exception('unable to find video index');
+    }
+    return _buffer.buffer.asUint8List(videoIndex.start, videoIndex.videoLength);
   }
 
-  ///This Method takes [filePath] as parameter
-  ///extracts the XMP data and [VideoIndex] of the file
-  ///returns [File] containing the video portion of the
-  ///motion photo in MP4 format
-  Future<File> getMotionVideoFile({String fileName = 'motionphoto'}) async {
+  // getMotionVideoFile returns the video portion of the motion photo as a file.
+  Future<File> getMotionVideoFile({
+    String fileName = 'motionphoto',
+    VideoIndex? index,
+  }) async {
+    loadBuffer();
     Directory tempDir = await getTemporaryDirectory();
-    return File('${tempDir.path}/$fileName.mp4').writeAsBytes(getMotionVideo());
+    return File('${tempDir.path}/$fileName.mp4').writeAsBytes(
+      getMotionVideo(index: index),
+    );
   }
 }
