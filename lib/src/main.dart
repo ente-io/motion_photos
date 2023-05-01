@@ -41,8 +41,7 @@ class MotionPhotos {
     final int mp4Index =
         boyerMooreSearch(buffer, MotionPhotoConstants.mp4HeaderPattern);
     if (mp4Index != -1) {
-      return VideoIndex(
-          mp4Index, buffer.lengthInBytes, buffer.lengthInBytes - mp4Index);
+      return VideoIndex(start: mp4Index, end: buffer.lengthInBytes);
     }
     return MotionPhotoHelpers.extractVideoIndexFromXMP(buffer);
   }
@@ -53,7 +52,7 @@ class MotionPhotos {
   ///the motion photo
   Uint8List getMotionVideo() {
     final indexes = getMotionVideoIndex()!;
-    return buffer.buffer.asUint8List(indexes.startIndex, indexes.videoLength);
+    return buffer.buffer.asUint8List(indexes.start, indexes.videoLength);
   }
 
   ///This Method takes [filePath] as parameter

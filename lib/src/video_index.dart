@@ -1,31 +1,32 @@
 ///[VideoIndex] is the model class used fo storing
 /// MotionPhotos start and end index with file size
 class VideoIndex {
-  ///[startIndex] is the starting index of video content in motion photo buffer.
-  final int startIndex;
+  ///[start] is the starting index of video content in motion photo buffer.
+  final int start;
 
-  ///[endIndex] is the ending index of video content in motion photo buffer.
-  final int endIndex;
+  ///[end] is the ending index of video content in motion photo buffer.
+  final int end;
 
-  ///[endIndex] is the size of video content in motion photo buffer.
-  final int videoLength;
+  int get videoLength => end - start;
 
-  const VideoIndex(this.startIndex, this.endIndex, this.videoLength);
+  const VideoIndex({
+    required this.start,
+    required this.end,
+  });
 
   @override
   String toString() =>
-      'Result{startIndex: $startIndex, endIndex: $endIndex, videoLength: $videoLength}';
+      'VideoIndex{start: $start, end: $end, videoLength: $videoLength}';
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is VideoIndex &&
           runtimeType == other.runtimeType &&
-          startIndex == other.startIndex &&
-          endIndex == other.endIndex &&
+          start == other.start &&
+          end == other.end &&
           videoLength == other.videoLength;
 
   @override
-  int get hashCode =>
-      startIndex.hashCode ^ endIndex.hashCode ^ videoLength.hashCode;
+  int get hashCode => start.hashCode ^ end.hashCode ^ videoLength.hashCode;
 }

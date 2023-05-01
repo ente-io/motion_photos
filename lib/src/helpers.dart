@@ -25,8 +25,8 @@ class MotionPhotoHelpers {
       final int size = bytes.lengthInBytes;
       for (String offSetKey in MotionPhotoConstants.fileOffsetKeys) {
         if (xmpData.containsKey(offSetKey)) {
-          final offset = int.parse(xmpData[offSetKey]);
-          return VideoIndex(size - offset, size, offset);
+          final offsetFromEnd = int.parse(xmpData[offSetKey]);
+          return VideoIndex(start: size - offsetFromEnd, end: size);
         }
       }
     } catch (e) {

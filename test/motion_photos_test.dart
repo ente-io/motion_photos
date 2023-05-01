@@ -26,14 +26,14 @@ void main() {
     test('JPEG MotionPhoto', () async {
       final motionPhotos = MotionPhotos('assets/motionphoto.jpg');
       final actualResult = motionPhotos.getMotionVideoIndex();
-      const expectedResult = VideoIndex(3366251, 8013982, 4647731);
+      const expectedResult = VideoIndex(start: 3366251, end: 8013982);
       expect(actualResult!, expectedResult);
     });
 
     test('HEIF MotionPhoto', () async {
       final motionPhotos = MotionPhotos('assets/motionphoto.heic');
       final actualResult = motionPhotos.getMotionVideoIndex();
-      const expectedResult = VideoIndex(1455411, 3649069, 2193658);
+      const expectedResult = VideoIndex(start: 1455411, end: 3649069);
       expect(actualResult!, expectedResult);
     });
 
