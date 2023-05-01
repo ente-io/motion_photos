@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:motion_photos/motion_photos.dart';
-import 'package:motion_photos/src/helpers.dart';
+import 'package:motion_photos/src/boyermoore_search.dart';
+import 'package:motion_photos/src/constants.dart';
 import 'package:motion_photos/src/video_index.dart';
 
 void main() {
@@ -47,16 +48,18 @@ void main() {
     test('JPEG MotionPhoto', () async {
       final motionPhotos = MotionPhotos('assets/motionphoto.jpg');
       final videoBuffer = motionPhotos.getMotionVideo();
-      final hasVideoContent =
-          MotionPhotoHelpers.traverseBytes(videoBuffer) != -1;
+      final hasVideoContent = boyerMooreSearch(
+              videoBuffer, MotionPhotoConstants.mp4HeaderPattern) !=
+          -1;
       expect(hasVideoContent, true);
     });
 
     test('HEIF MotionPhoto', () async {
       final motionPhotos = MotionPhotos('assets/motionphoto.heic');
       final videoBuffer = motionPhotos.getMotionVideo();
-      final hasVideoContent =
-          MotionPhotoHelpers.traverseBytes(videoBuffer) != -1;
+      final hasVideoContent = boyerMooreSearch(
+              videoBuffer, MotionPhotoConstants.mp4HeaderPattern) !=
+          -1;
       expect(hasVideoContent, true);
     });
   });

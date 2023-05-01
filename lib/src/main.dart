@@ -25,21 +25,25 @@ class MotionPhotos {
   ///extracts the XMP data of the file
   ///returns wheather the file is a motion photo or not
   bool isMotionPhoto() {
-    int method = MotionPhotoHelpers.method(buffer);
-    return method != 0;
+    try {
+      return getMotionVideoIndex() != null;
+    } catch (e) {
+      return false;
+    }
   }
 
   ///This Method takes [filePath] as parameter
   ///extracts the XMP data of the file
   ///returns [VideoIndex] of the motion photo
   VideoIndex? getMotionVideoIndex() {
+    // Note: The order of the following methods is important
+    // We need to check for MP4 header, then XMP.
     final int mp4Index =
         boyerMooreSearch(buffer, MotionPhotoConstants.mp4HeaderPattern);
     if (mp4Index != -1) {
       return VideoIndex(
           mp4Index, buffer.lengthInBytes, buffer.lengthInBytes - mp4Index);
     }
-
     return MotionPhotoHelpers.extractVideoIndexFromXMP(buffer);
   }
 
