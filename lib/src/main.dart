@@ -1,9 +1,12 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:motion_photos/src/boyermoore_search.dart';
 import 'package:motion_photos/src/helpers.dart';
 import 'package:motion_photos/src/video_index.dart';
 import 'package:path_provider/path_provider.dart';
+
+import 'constants.dart';
 
 ///This class is responsible for classifying a file as motion photo,
 ///if so, extracts the [VideoIndex] from the motion photo.
@@ -29,19 +32,15 @@ class MotionPhotos {
   ///This Method takes [filePath] as parameter
   ///extracts the XMP data of the file
   ///returns [VideoIndex] of the motion photo
-  VideoIndex getMotionVideoIndex() {
-    int method = MotionPhotoHelpers.method(buffer);
-    if (method == 1) {
-      final val = MotionPhotoHelpers.extractVideoIndex(
-          MotionPhotoHelpers.extractXMP(buffer));
-      return val;
-    } else if (method == 2) {
-      final start = MotionPhotoHelpers.traverseBytes(buffer);
-      final val =
-          VideoIndex(start, buffer.lengthInBytes, buffer.lengthInBytes - start);
-      return val;
+  VideoIndex? getMotionVideoIndex() {
+    final int mp4Index =
+        boyerMooreSearch(buffer, MotionPhotoConstants.mp4HeaderPattern);
+    if (mp4Index != -1) {
+      return VideoIndex(
+          mp4Index, buffer.lengthInBytes, buffer.lengthInBytes - mp4Index);
     }
-    return const VideoIndex(0, 0, 0);
+
+    return MotionPhotoHelpers.extractVideoIndexFromXMP(buffer);
   }
 
   ///This Method takes [filePath] as parameter
@@ -49,7 +48,7 @@ class MotionPhotos {
   ///returns [Uint8List] bytes for the video content of
   ///the motion photo
   Uint8List getMotionVideo() {
-    final indexes = getMotionVideoIndex();
+    final indexes = getMotionVideoIndex()!;
     return buffer.buffer.asUint8List(indexes.startIndex, indexes.videoLength);
   }
 

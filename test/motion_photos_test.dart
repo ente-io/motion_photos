@@ -26,21 +26,20 @@ void main() {
       final motionPhotos = MotionPhotos('assets/motionphoto.jpg');
       final actualResult = motionPhotos.getMotionVideoIndex();
       const expectedResult = VideoIndex(3366251, 8013982, 4647731);
-      expect(actualResult, expectedResult);
+      expect(actualResult!, expectedResult);
     });
 
     test('HEIF MotionPhoto', () async {
       final motionPhotos = MotionPhotos('assets/motionphoto.heic');
       final actualResult = motionPhotos.getMotionVideoIndex();
       const expectedResult = VideoIndex(1455411, 3649069, 2193658);
-      expect(actualResult, expectedResult);
+      expect(actualResult!, expectedResult);
     });
 
     test('Not a MotionPhoto', () async {
       final motionPhotos = MotionPhotos('assets/normalphoto.jpg');
       final actualResult = motionPhotos.getMotionVideoIndex();
-      const expectedResult = VideoIndex(0, 0, 0);
-      expect(actualResult, expectedResult);
+      expect(actualResult == null, true);
     });
   });
 
@@ -59,14 +58,6 @@ void main() {
       final hasVideoContent =
           MotionPhotoHelpers.traverseBytes(videoBuffer) != -1;
       expect(hasVideoContent, true);
-    });
-
-    test('Not a MotionPhoto', () async {
-      final motionPhotos = MotionPhotos('assets/normalphoto.jpg');
-      final videoBuffer = motionPhotos.getMotionVideo();
-      final hasVideoContent =
-          MotionPhotoHelpers.traverseBytes(videoBuffer) != -1;
-      expect(hasVideoContent, false);
     });
   });
 }

@@ -57,16 +57,21 @@ class MotionPhotoHelpers {
   static int traverseBytes(Uint8List buffer) =>
       boyerMooreSearch(buffer, MotionPhotoConstants.mp4HeaderPattern);
 
-  ///This Method takes [xmpData] as parameter
-  ///and return [VideoIndex] of the motion photo
-  static VideoIndex extractVideoIndex(Map<String, dynamic> xmpData) {
-    for (String offSetKey in MotionPhotoConstants.fileOffsetKeys) {
-      if (xmpData.containsKey(offSetKey)) {
-        final offset = int.parse(xmpData[offSetKey]);
-        final size = int.parse(xmpData[MotionPhotoConstants.fileSizeKey]);
-        return VideoIndex(size - offset, size, offset);
+  ///extractVideoIndexFromXMP takes file [bytes] as parameter
+  /// and return [VideoIndex] of the motion photo using the XMP data
+  static VideoIndex? extractVideoIndexFromXMP(Uint8List bytes) {
+    try {
+      final Map<String, dynamic> xmpData = XMPExtractor().extract(bytes);
+      final int size = bytes.lengthInBytes;
+      for (String offSetKey in MotionPhotoConstants.fileOffsetKeys) {
+        if (xmpData.containsKey(offSetKey)) {
+          final offset = int.parse(xmpData[offSetKey]);
+          return VideoIndex(size - offset, size, offset);
+        }
       }
+    } catch (e) {
+      log(e.toString());
     }
-    throw 'No Video Index Found';
+    return null;
   }
 }
