@@ -39,6 +39,7 @@ class MotionPhotoHelpers {
     } catch (e) {
       log(e.toString());
     }
+
     if (method2) return 2;
     if (method1) return 1;
 
@@ -53,28 +54,8 @@ class MotionPhotoHelpers {
     return res;
   }
 
-  static int traverseBytes(Uint8List buffer) {
-    final mp4Pattern = Uint8List.fromList([
-      0x00,
-      0x00,
-      0x00,
-      0x18,
-      0x66,
-      0x74,
-      0x79,
-      0x70,
-      0x6D,
-      0x70,
-      0x34,
-      0x32,
-      0x00,
-      0x00,
-      0x00,
-      0x00
-    ]);
-    final index = boyerMooreSearch(buffer, mp4Pattern);
-    return index;
-  }
+  static int traverseBytes(Uint8List buffer) =>
+      boyerMooreSearch(buffer, MotionPhotoConstants.mp4HeaderPattern);
 
   ///This Method takes [xmpData] as parameter
   ///and return [VideoIndex] of the motion photo
