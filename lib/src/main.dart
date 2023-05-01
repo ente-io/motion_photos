@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:typed_data';
+
 import 'package:motion_photos/src/helpers.dart';
 import 'package:motion_photos/src/video_index.dart';
 import 'package:path_provider/path_provider.dart';
@@ -8,22 +9,20 @@ import 'package:path_provider/path_provider.dart';
 ///if so, extracts the [VideoIndex] from the motion photo.
 ///extracts the VideoContent of the motion photo.
 class MotionPhotos {
-  // create a instance of [MotionPhotoHelpers] class
-  final helpers = MotionPhotoHelpers();
   late Uint8List buffer;
 
   ///This Method initializes the [extractor] object
   ///which is responsible for extracting the XMP data
   ///from the motion photo
   MotionPhotos(String filePath) {
-    buffer = helpers.pathToBytes(filePath);
+    buffer = MotionPhotoHelpers.pathToBytes(filePath);
   }
 
   ///This Method takes [filePath] as parameter
   ///extracts the XMP data of the file
   ///returns wheather the file is a motion photo or not
   bool isMotionPhoto() {
-    int method = helpers.method(buffer);
+    int method = MotionPhotoHelpers.method(buffer);
     return method != 0;
   }
 
@@ -31,12 +30,13 @@ class MotionPhotos {
   ///extracts the XMP data of the file
   ///returns [VideoIndex] of the motion photo
   VideoIndex getMotionVideoIndex() {
-    int method = helpers.method(buffer);
+    int method = MotionPhotoHelpers.method(buffer);
     if (method == 1) {
-      final val = helpers.extractVideoIndex(helpers.extractXMP(buffer));
+      final val = MotionPhotoHelpers.extractVideoIndex(
+          MotionPhotoHelpers.extractXMP(buffer));
       return val;
     } else if (method == 2) {
-      final start = helpers.traverseBytes(buffer);
+      final start = MotionPhotoHelpers.traverseBytes(buffer);
       final val =
           VideoIndex(start, buffer.lengthInBytes, buffer.lengthInBytes - start);
       return val;

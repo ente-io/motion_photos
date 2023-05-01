@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:motion_photos/motion_photos.dart';
+import 'package:motion_photos/src/helpers.dart';
 import 'package:motion_photos/src/video_index.dart';
 
 void main() {
@@ -48,7 +49,7 @@ void main() {
       final motionPhotos = MotionPhotos('assets/motionphoto.jpg');
       final videoBuffer = motionPhotos.getMotionVideo();
       final hasVideoContent =
-          motionPhotos.helpers.traverseBytes(videoBuffer) != -1;
+          MotionPhotoHelpers.traverseBytes(videoBuffer) != -1;
       expect(hasVideoContent, true);
     });
 
@@ -56,7 +57,7 @@ void main() {
       final motionPhotos = MotionPhotos('assets/motionphoto.heic');
       final videoBuffer = motionPhotos.getMotionVideo();
       final hasVideoContent =
-          motionPhotos.helpers.traverseBytes(videoBuffer) != -1;
+          MotionPhotoHelpers.traverseBytes(videoBuffer) != -1;
       expect(hasVideoContent, true);
     });
 
@@ -64,7 +65,7 @@ void main() {
       final motionPhotos = MotionPhotos('assets/normalphoto.jpg');
       final videoBuffer = motionPhotos.getMotionVideo();
       final hasVideoContent =
-          motionPhotos.helpers.traverseBytes(videoBuffer) != -1;
+          MotionPhotoHelpers.traverseBytes(videoBuffer) != -1;
       expect(hasVideoContent, false);
     });
   });

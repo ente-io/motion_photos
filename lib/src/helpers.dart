@@ -12,13 +12,13 @@ import 'package:motion_photos/src/xmp_extractor.dart';
 class MotionPhotoHelpers {
   ///This Method takes [filePath] as parameter
   ///and return [Uint8List] synchronously
-  Uint8List pathToBytes(String filePath) {
+  static Uint8List pathToBytes(String filePath) {
     if (filePath.isEmpty) throw 'File Path Is Empty';
     File file = File(filePath);
     return file.readAsBytesSync();
   }
 
-  int method(Uint8List buffer) {
+  static int method(Uint8List buffer) {
     var method1 = false;
     var method2 = false;
     try {
@@ -47,13 +47,13 @@ class MotionPhotoHelpers {
 
   ///This Method takes [filePath] as parameter
   ///and return [Map] of XMP datas
-  Map<String, dynamic> extractXMP(Uint8List bytes) {
+  static Map<String, dynamic> extractXMP(Uint8List bytes) {
     final res = XMPExtractor().extract(bytes);
     res[MotionPhotoConstants.fileSizeKey] = bytes.lengthInBytes.toString();
     return res;
   }
 
-  int traverseBytes(Uint8List buffer) {
+  static int traverseBytes(Uint8List buffer) {
     final mp4Pattern = Uint8List.fromList([
       0x00,
       0x00,
@@ -78,7 +78,7 @@ class MotionPhotoHelpers {
 
   ///This Method takes [xmpData] as parameter
   ///and return [VideoIndex] of the motion photo
-  VideoIndex extractVideoIndex(Map<String, dynamic> xmpData) {
+  static VideoIndex extractVideoIndex(Map<String, dynamic> xmpData) {
     for (String offSetKey in MotionPhotoConstants.fileOffsetKeys) {
       if (xmpData.containsKey(offSetKey)) {
         final offset = int.parse(xmpData[offSetKey]);
