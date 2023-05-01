@@ -29,6 +29,7 @@ class MyApp extends StatelessWidget {
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
+
   final String title;
 
   @override
@@ -92,9 +93,12 @@ class _MyHomePageState extends State<MyHomePage> {
     if (isPicked) {
       try {
         final vidIndex = motionPhotos.getMotionVideoIndex();
+        if (vidIndex == null) {
+          return 'Video Index is null';
+        }
         return '''
-    Start Index: ${vidIndex.startIndex}
-    End Index: ${vidIndex.endIndex}
+    Start Index: ${vidIndex.start}
+    End Index: ${vidIndex.end}
     Video Size: ${vidIndex.videoLength}
     ''';
       } catch (e) {
