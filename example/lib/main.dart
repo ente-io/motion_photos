@@ -1,9 +1,9 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:motion_photos/motion_photos.dart';
-import 'dart:io';
 import 'package:video_player/video_player.dart';
 
 void main() {
@@ -46,7 +46,9 @@ class _MyHomePageState extends State<MyHomePage> {
     FilePickerResult? result;
     try {
       result = await FilePicker.platform.pickFiles(
-        type: FileType.any,
+        type: FileType.image,
+        allowMultiple: false,
+        allowCompression: false,
       );
       final path = result!.paths[0]!;
       motionPhotos = MotionPhotos(path);
