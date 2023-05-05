@@ -8,38 +8,38 @@ void main() {
   group('isMotionPhoto', () {
     test('JPEG MotionPhoto', () async {
       final motionPhotos = MotionPhotos('assets/motionphoto.jpg');
-      expect(motionPhotos.isMotionPhoto(), true);
+      expect(await motionPhotos.isMotionPhoto(), true);
     });
 
     test('HEIF MotionPhoto', () async {
       final motionPhotos = MotionPhotos('assets/motionphoto.heic');
-      expect(motionPhotos.isMotionPhoto(), true);
+      expect(await motionPhotos.isMotionPhoto(), true);
     });
 
     test('Not a MotionPhoto', () async {
       final motionPhotos = MotionPhotos('assets/normalphoto.jpg');
-      expect(motionPhotos.isMotionPhoto(), false);
+      expect(await motionPhotos.isMotionPhoto(), false);
     });
   });
 
   group('getVideoIndex', () {
     test('JPEG MotionPhoto', () async {
       final motionPhotos = MotionPhotos('assets/motionphoto.jpg');
-      final actualResult = motionPhotos.getMotionVideoIndex();
+      final actualResult = await motionPhotos.getMotionVideoIndex();
       const expectedResult = VideoIndex(start: 3366251, end: 8013982);
       expect(actualResult!, expectedResult);
     });
 
     test('HEIF MotionPhoto', () async {
       final motionPhotos = MotionPhotos('assets/motionphoto.heic');
-      final actualResult = motionPhotos.getMotionVideoIndex();
+      final actualResult = await motionPhotos.getMotionVideoIndex();
       const expectedResult = VideoIndex(start: 1455411, end: 3649069);
       expect(actualResult!, expectedResult);
     });
 
     test('Not a MotionPhoto', () async {
       final motionPhotos = MotionPhotos('assets/normalphoto.jpg');
-      final actualResult = motionPhotos.getMotionVideoIndex();
+      final actualResult = await motionPhotos.getMotionVideoIndex();
       expect(actualResult == null, true);
     });
   });
@@ -47,7 +47,7 @@ void main() {
   group('getMotionVideo', () {
     test('JPEG MotionPhoto', () async {
       final motionPhotos = MotionPhotos('assets/motionphoto.jpg');
-      final videoBuffer = motionPhotos.getMotionVideo();
+      final videoBuffer = await motionPhotos.getMotionVideo();
       final hasVideoContent = boyerMooreSearch(
               videoBuffer, MotionPhotoConstants.mp4HeaderPattern) !=
           -1;
@@ -56,7 +56,7 @@ void main() {
 
     test('HEIF MotionPhoto', () async {
       final motionPhotos = MotionPhotos('assets/motionphoto.heic');
-      final videoBuffer = motionPhotos.getMotionVideo();
+      final videoBuffer = await motionPhotos.getMotionVideo();
       final hasVideoContent = boyerMooreSearch(
               videoBuffer, MotionPhotoConstants.mp4HeaderPattern) !=
           -1;

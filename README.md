@@ -14,25 +14,22 @@ The Flutter [MotionPhoto](https://support.google.com/googlecamera/answer/9937175
 ## Getting started
 
 To use this package:
-* Run the following command in terminal
-  * ```
-    flutter pub get motion_photo
-    ```
-    OR
-* Add the following in pubspec.yaml file
-  * ```yml
-    dependencies:
-        flutter:
-            sdk: flutter
-        motion_photo:   
-     ```
+* Add dependency to your [pubspec.yaml](https://flutter.dev/docs/development/packages-and-plugins/using-packages) file either by directly adding the dependency or by using terminal.
+   - Via Terminal
+  ```
+  flutter pub get motion_photo
+  ```
+  - Or Add the following in pubspec.yaml file
+  ```yml
+  dependencies:
+      flutter:
+          sdk: flutter
+      motion_photo:   
+   ```
 
 ## Usage
 
 **MotionPhotos Example App:**
-* Video
-
-    https://user-images.githubusercontent.com/63253383/224796252-c671f465-be88-49df-9bd1-ab51984ac94c.mp4
 
 * Clone the codebase.
     ```sh
@@ -48,160 +45,157 @@ To use this package:
     ```
 * Code
     ```dart
-    class MyApp extends StatelessWidget {
+    import 'dart:developer';
+  import 'dart:io';
+  
+  import 'package:file_picker/file_picker.dart';
+  import 'package:flutter/material.dart';
+  import 'package:motion_photos/motion_photos.dart';
+  import 'package:video_player/video_player.dart';
+  
+  void main() {
+    runApp(const MyApp());
+  }
+  
+  class MyApp extends StatelessWidget {
     const MyApp({super.key});
-
+  
     // This widget is the root of your application.
     @override
     Widget build(BuildContext context) {
-        return MaterialApp(
-        title: 'MotionPhotos Example',
+      return MaterialApp(
+        title: 'Motion Photo Example (from ente.io team)',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-            primarySwatch: Colors.deepPurple,
+          primarySwatch: Colors.deepPurple,
         ),
-        home: const MyHomePage(title: 'MotionPhotos Example'),
-        );
+        home: const MyHomePage(title: 'Motion Photo Example'),
+      );
     }
-    }
-
-    class MyHomePage extends StatefulWidget {
+  }
+  
+  class MyHomePage extends StatefulWidget {
     const MyHomePage({super.key, required this.title});
+  
     final String title;
-
+  
     @override
     State<MyHomePage> createState() => _MyHomePageState();
-    }
-
-    class _MyHomePageState extends State<MyHomePage> {
+  }
+  
+  class _MyHomePageState extends State<MyHomePage> {
     late String directory;
     List file = List.empty(growable: true);
     late VideoPlayerController _controller;
     late MotionPhotos motionPhotos;
+    bool? _isMotionPhoto;
+    VideoIndex? videoIndex;
     bool isPicked = false;
-
+  
     Future<void> _pickFromGallery() async {
-        FilePickerResult? result;
-        try {
+      FilePickerResult? result;
+      try {
         result = await FilePicker.platform.pickFiles(
           type: FileType.image,
           allowMultiple: false,
           allowCompression: false,
         );
+        // reset video index
+        videoIndex = null;
+        _isMotionPhoto = null;
         final path = result!.paths[0]!;
         motionPhotos = MotionPhotos(path);
+        _isMotionPhoto = await motionPhotos.isMotionPhoto();
+        if (_isMotionPhoto!) {
+          videoIndex = await motionPhotos.getMotionVideoIndex();
+        }
         setState(() {
-            isPicked = true;
+          isPicked = true;
         });
-        } catch (e) {
+      } catch (e) {
         log('Exep: ****$e***');
-        }
+      }
     }
-
+  
     Future<Widget> _playVideo() async {
-        if (isPicked) {
+      if (isPicked && (_isMotionPhoto ?? false)) {
         try {
-            File file = await motionPhotos.getMotionVideoFile();
-            _controller = VideoPlayerController.file(file);
-            _controller.initialize();
-            _controller.setLooping(true);
-            _controller.play();
-            return VideoPlayer(_controller);
+          File file = await motionPhotos.getMotionVideoFile();
+          _controller = VideoPlayerController.file(file);
+          _controller.initialize();
+          _controller.setLooping(true);
+          _controller.play();
+          return VideoPlayer(_controller);
         } catch (e) {
-            Text(e.toString(), style: const TextStyle(color: Colors.white));
+          return Text(e.toString(), style: const TextStyle(color: Colors.red));
         }
-        }
-        return const Icon(Icons.play_arrow, size: 45, color: Colors.white);
+      }
+      return const SizedBox.shrink();
     }
-
+  
     String printIsMotionPhoto() {
-        if (isPicked) {
-        try {
-            final isMotionPhoto = motionPhotos.isMotionPhoto();
-            return isMotionPhoto.toString();
-        } catch (e) {
-            return e.toString();
-        }
-        }
-        return 'TBA';
+      if (isPicked && _isMotionPhoto != null) {
+        return _isMotionPhoto! ? 'Yes' : 'No';
+      }
+      return 'TBA';
     }
-
+  
     String printVideoIndex() {
-        if (isPicked) {
-        try {
-            final vidIndex = motionPhotos.getMotionVideoIndex();
-            return '''
-        Start Index: ${vidIndex.startIndex}
-        End Index: ${vidIndex.endIndex}
-        Video Size: ${vidIndex.videoLength}
-        ''';
-        } catch (e) {
-            return e.toString();
-        }
-        }
-        return 'TBA';
+      if (isPicked && videoIndex != null) {
+        return '''
+        Start Index: ${videoIndex!.start}
+        End Index: ${videoIndex!.end}
+        Video Size: ${videoIndex!.videoLength}
+      ''';
+      }
+      return 'NA';
     }
-
+  
     @override
     Widget build(BuildContext context) {
-        return DefaultTabController(
-            length: 3,
-            child: Scaffold(
-            appBar: AppBar(
-                title: Text(widget.title),
-                bottom: const TabBar(
-                isScrollable: true,
-                tabs: [
-                    Tab(text: "IsMotionPhoto"),
-                    Tab(text: "VideoIndex"),
-                    Tab(text: "MotionPhotoVideo"),
-                ],
-                ),
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(widget.title),
+        ),
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Is MotionPhoto: ${printIsMotionPhoto()}',
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
             ),
-            body: TabBarView(
-                children: [
-                Center(
-                    child: Text(
-                    'Is MotionPhoto: ${printIsMotionPhoto()}',
-                    style:
-                        const TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
-                )),
-                Center(
-                    child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                        const Text('MotionPhoto VideoIndex',
-                            style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.w800)),
-                        Text(printVideoIndex()),
-                    ])),
-                Center(
-                    child: Container(
-                        color: Colors.black,
-                        width: double.infinity,
-                        height: 300,
-                        child: FutureBuilder<Widget>(
-                            future: _playVideo(),
-                            builder: (context, snapshot) {
-                            if (snapshot.hasData) {
-                                return snapshot.data!;
-                            } else {
-                                return const Center(
-                                    child: CircularProgressIndicator());
-                            }
-                            })),
-                ),
-                ],
-            ),
-            floatingActionButton: FloatingActionButton(
-                onPressed: () {
-                _pickFromGallery();
+            const SizedBox(height: 20),
+            const Text('Video Info',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+            Text(printVideoIndex()),
+            const SizedBox(height: 20),
+            Container(
+              color: Colors.transparent,
+              width: double.infinity,
+              height: 300,
+              child: FutureBuilder<Widget>(
+                future: _playVideo(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return snapshot.data!;
+                  } else {
+                    return const Center(child: CircularProgressIndicator());
+                  }
                 },
-                child: const Icon(Icons.image),
-            ),
-            ));
-         }
-        }
+              ),
+            )
+          ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            _pickFromGallery();
+          },
+          child: const Icon(Icons.image),
+        ),
+      );
+    }
+  }
+    
     ```
 ## DataTypes Descriptions
 
@@ -213,9 +207,9 @@ To use this package:
 
   Methods                |   Parameters                       |   Return
 -----------------------  | -------------------------------    | ---------------
-`isMotionPhoto`          |   <p>**String** `filePath` [path of the file]                                 |  **bool**                                      | 
-`getMotionVideoIndex`  | <p>**String** `filePath` [path of the file]</p>  | **VideoIndex** 
-`getMotionVideo`  | <p>**String** `filePath` [path of the file]  | **Uint8List**
+`isMotionPhoto`          |   <p>**String** `filePath` [path of the file]                                 |  **Future\<bool>**                                      | 
+`getMotionVideoIndex`  | <p>**String** `filePath` [path of the file]</p>  | **Future\<VideoIndex?>** 
+`getMotionVideo`  | <p>**String** `filePath` [path of the file]  | **Future\<Uint8List>**
 `getMotionVideoFile`  | <p>**String** `filePath` [path of the file]</p><p>**String** `fileName` [optional fileName for the destination mp4 file]</p>   | **Future\<File>**
 
 ## Implementation

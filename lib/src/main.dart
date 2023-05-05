@@ -17,18 +17,19 @@ class MotionPhotos {
 
   MotionPhotos(this.filePath);
 
-  void loadBuffer() {
+  Future<void> loadBuffer() async {
     if (!bufferLoaded) {
-      _buffer = MotionPhotoHelpers.pathToBytes(filePath);
+      final File file = File(filePath);
+      _buffer = await file.readAsBytes();
       bufferLoaded = true;
     }
   }
 
   /// isMotionPhoto returns true if the file is a motion photo
-  bool isMotionPhoto() {
+  Future<bool> isMotionPhoto() async {
     try {
-      loadBuffer();
-      return getMotionVideoIndex() != null;
+      await loadBuffer();
+      return (await getMotionVideoIndex()) != null;
     } catch (e) {
       return false;
     }
@@ -36,8 +37,8 @@ class MotionPhotos {
 
   // getMotionVideoIndex returns the [VideoIndex] of the photo if it's a motion photo
   // otherwise returns null
-  VideoIndex? getMotionVideoIndex() {
-    loadBuffer();
+  Future<VideoIndex?> getMotionVideoIndex() async {
+    await loadBuffer();
     // Note: The order of the following methods is important
     // We need to check for MP4 header, then XMP.
     final int mp4Index =
@@ -50,8 +51,8 @@ class MotionPhotos {
 
   // getMotionVideo returns the video portion of the motion photo.
   // If [index] is not provided, it will be extracted from the file at given {filePath}.
-  Uint8List getMotionVideo({VideoIndex? index}) {
-    final videoIndex = index ?? getMotionVideoIndex();
+  Future<Uint8List> getMotionVideo({VideoIndex? index}) async {
+    final videoIndex = index ?? (await getMotionVideoIndex());
     if (videoIndex == null) {
       throw Exception('unable to find video index');
     }
@@ -65,8 +66,9 @@ class MotionPhotos {
   }) async {
     loadBuffer();
     Directory tempDir = await getTemporaryDirectory();
+    Uint8List videoBuffer = await getMotionVideo(index: index);
     return File('${tempDir.path}/$fileName.mp4').writeAsBytes(
-      getMotionVideo(index: index),
+      videoBuffer,
     );
   }
 }

@@ -17,12 +17,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'MotionPhotos Example',
+      title: 'Motion Photo Example (from ente.io team)',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.deepPurple,
       ),
-      home: const MyHomePage(title: 'MotionPhotos Example'),
+      home: const MyHomePage(title: 'Motion Photo Example'),
     );
   }
 }
@@ -41,6 +41,8 @@ class _MyHomePageState extends State<MyHomePage> {
   List file = List.empty(growable: true);
   late VideoPlayerController _controller;
   late MotionPhotos motionPhotos;
+  bool? _isMotionPhoto;
+  VideoIndex? videoIndex;
   bool isPicked = false;
 
   Future<void> _pickFromGallery() async {
@@ -51,8 +53,15 @@ class _MyHomePageState extends State<MyHomePage> {
         allowMultiple: false,
         allowCompression: false,
       );
+      // reset video index
+      videoIndex = null;
+      _isMotionPhoto = null;
       final path = result!.paths[0]!;
       motionPhotos = MotionPhotos(path);
+      _isMotionPhoto = await motionPhotos.isMotionPhoto();
+      if (_isMotionPhoto!) {
+        videoIndex = await motionPhotos.getMotionVideoIndex();
+      }
       setState(() {
         isPicked = true;
       });
@@ -62,7 +71,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<Widget> _playVideo() async {
-    if (isPicked) {
+    if (isPicked && (_isMotionPhoto ?? false)) {
       try {
         File file = await motionPhotos.getMotionVideoFile();
         _controller = VideoPlayerController.file(file);
@@ -71,100 +80,71 @@ class _MyHomePageState extends State<MyHomePage> {
         _controller.play();
         return VideoPlayer(_controller);
       } catch (e) {
-        Text(e.toString(), style: const TextStyle(color: Colors.white));
+        return Text(e.toString(), style: const TextStyle(color: Colors.red));
       }
     }
-    return const Icon(Icons.play_arrow, size: 45, color: Colors.white);
+    return const SizedBox.shrink();
   }
 
   String printIsMotionPhoto() {
-    if (isPicked) {
-      try {
-        final isMotionPhoto = motionPhotos.isMotionPhoto();
-        return isMotionPhoto.toString();
-      } catch (e) {
-        return e.toString();
-      }
+    if (isPicked && _isMotionPhoto != null) {
+      return _isMotionPhoto! ? 'Yes' : 'No';
     }
     return 'TBA';
   }
 
   String printVideoIndex() {
-    if (isPicked) {
-      try {
-        final vidIndex = motionPhotos.getMotionVideoIndex();
-        if (vidIndex == null) {
-          return 'Video Index is null';
-        }
-        return '''
-    Start Index: ${vidIndex.start}
-    End Index: ${vidIndex.end}
-    Video Size: ${vidIndex.videoLength}
+    if (isPicked && videoIndex != null) {
+      return '''
+      Start Index: ${videoIndex!.start}
+      End Index: ${videoIndex!.end}
+      Video Size: ${videoIndex!.videoLength}
     ''';
-      } catch (e) {
-        return e.toString();
-      }
     }
-    return 'TBA';
+    return 'NA';
   }
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-        length: 3,
-        child: Scaffold(
-          appBar: AppBar(
-            title: Text(widget.title),
-            bottom: const TabBar(
-              isScrollable: true,
-              tabs: [
-                Tab(text: "IsMotionPhoto"),
-                Tab(text: "VideoIndex"),
-                Tab(text: "MotionPhotoVideo"),
-              ],
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.title),
+      ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            'Is MotionPhoto: ${printIsMotionPhoto()}',
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+          ),
+          const SizedBox(height: 20),
+          const Text('Video Info',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+          Text(printVideoIndex()),
+          const SizedBox(height: 20),
+          Container(
+            color: Colors.transparent,
+            width: double.infinity,
+            height: 300,
+            child: FutureBuilder<Widget>(
+              future: _playVideo(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return snapshot.data!;
+                } else {
+                  return const Center(child: CircularProgressIndicator());
+                }
+              },
             ),
-          ),
-          body: TabBarView(
-            children: [
-              Center(
-                  child: Text(
-                'Is MotionPhoto: ${printIsMotionPhoto()}',
-                style:
-                    const TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
-              )),
-              Center(
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                    const Text('MotionPhoto VideoIndex',
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.w800)),
-                    Text(printVideoIndex()),
-                  ])),
-              Center(
-                child: Container(
-                    color: Colors.black,
-                    width: double.infinity,
-                    height: 300,
-                    child: FutureBuilder<Widget>(
-                        future: _playVideo(),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            return snapshot.data!;
-                          } else {
-                            return const Center(
-                                child: CircularProgressIndicator());
-                          }
-                        })),
-              ),
-            ],
-          ),
-          floatingActionButton: FloatingActionButton(
-            onPressed: () {
-              _pickFromGallery();
-            },
-            child: const Icon(Icons.image),
-          ),
-        ));
+          )
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          _pickFromGallery();
+        },
+        child: const Icon(Icons.image),
+      ),
+    );
   }
 }
