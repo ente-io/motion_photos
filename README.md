@@ -33,7 +33,7 @@ To use this package:
 
 * Clone the codebase.
     ```sh
-    git clone <REPO_URL>
+    git clone git@github.com:ente-io/motion_photo.git
     ```
 * Go to example folder.
     ```sh
