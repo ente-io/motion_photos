@@ -2,7 +2,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:motion_photos/motion_photos.dart';
 import 'package:motion_photos/src/boyermoore_search.dart';
 import 'package:motion_photos/src/constants.dart';
-import 'package:motion_photos/src/video_index.dart';
 
 void main() {
   group('isMotionPhoto', () {
