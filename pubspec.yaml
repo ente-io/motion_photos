@@ -1,7 +1,7 @@
 name: motion_photos
 description: A new Flutter package project.
 version: 0.0.1
-homepage:
+homepage: https://ente.io
 
 environment:
   sdk: '>=2.19.2 <3.0.0'
