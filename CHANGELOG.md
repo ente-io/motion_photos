@@ -1,3 +1,6 @@
+## 0.0.4
+- Add valid package description
+
 ## 0.0.3
 - Fix typos
 
@@ -13,5 +16,5 @@
 
     - `getMotionVideo` method returns [Uint8List] bytes for the video content of the motion photo.
 
-    - `getMotionVideo` method extracts and returns mp4 file of the video content of the motion photo.
+    - `getMotionVideoFile` method extracts and returns mp4 file of the video content of the motion photo.
 
