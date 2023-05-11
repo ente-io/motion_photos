@@ -17,14 +17,14 @@ To use this package:
 * Add dependency to your [pubspec.yaml](https://flutter.dev/docs/development/packages-and-plugins/using-packages) file either by directly adding the dependency or by using terminal.
    - Via Terminal
   ```
-  flutter pub get motion_photo
+  flutter pub get motion_photos
   ```
   - Or Add the following in pubspec.yaml file
   ```yml
   dependencies:
       flutter:
           sdk: flutter
-      motion_photo:   
+      motion_photos:
    ```
 
 ## Usage
@@ -33,7 +33,7 @@ To use this package:
 
 * Clone the codebase.
     ```sh
-    git clone git@github.com:ente-io/motion_photo.git
+    git clone git@github.com:ente-io/motion_photos.git
     ```
 * Go to example folder.
     ```sh
