@@ -1,3 +1,6 @@
+## 0.0.2
+- Fix formatting
+
 ## 0.0.1
 
 * Features: 
