@@ -1,6 +1,6 @@
 name: motion_photos
 description: Flutter plugin for detecting motion photos
-version: 0.0.2
+version: 0.0.3
 homepage: https://ente.io
 
 environment:
