@@ -9,7 +9,7 @@ The Flutter [MotionPhotos](https://support.google.com/googlecamera/answer/993717
 
 * `getMotionVideo` method returns [Uint8List] bytes for the video content of the motion photo.
 
-* `getMotionVideo` method extracts and returns mp4 file of the video content of the motion photo.
+* `getMotionVideoFile` method extracts and returns mp4 file of the video content of the motion photo.
 
 ## Getting started
 
@@ -37,7 +37,7 @@ To use this package:
     ```
 * Go to example folder.
     ```sh
-    cd /example
+    cd ./example
     ```
 * Run the App.
     ```sh
