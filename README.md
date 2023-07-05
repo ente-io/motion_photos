@@ -1,5 +1,7 @@
 # motion_photos
-The Flutter [MotionPhotos](https://support.google.com/googlecamera/answer/9937175?hl=en) Package to detect and extract the video content from the motion photos by [ente](https://ente.io).
+The Flutter [MotionPhotos](https://pub.dev/packages/motion_photos) Package to detect and extract the video content from the motion photos by [ente](https://ente.io).
+
+**Related Blog** [How to detect Android motion photos in Flutter](https://ente.io/blog/tech/android-motion-photos-flutter/)
 
 ## Features
 
