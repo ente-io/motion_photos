@@ -19,6 +19,11 @@ void main() {
       final motionPhotos = MotionPhotos('assets/normalphoto.jpg');
       expect(await motionPhotos.isMotionPhoto(), false);
     });
+
+    test('Not a MotionPhoto (Pixel8)', () async {
+      final motionPhotos = MotionPhotos('assets/pixel_8.jpg');
+      expect(await motionPhotos.isMotionPhoto(), false);
+    });
   });
 
   group('getVideoIndex', () {
@@ -36,7 +41,7 @@ void main() {
       expect(actualResult!, expectedResult);
     });
 
-    test('Not a MotionPhoto', () async {
+    test('Not a motion photo_pixel', () async {
       final motionPhotos = MotionPhotos('assets/normalphoto.jpg');
       final actualResult = await motionPhotos.getMotionVideoIndex();
       expect(actualResult == null, true);
