@@ -1,5 +1,7 @@
-# motion_photo
-The Flutter [MotionPhoto](https://support.google.com/googlecamera/answer/9937175?hl=en) Package to detect and extract the video content from the motion photos by [ente](https://ente.io).
+# motion_photos
+The Flutter [MotionPhotos](https://pub.dev/packages/motion_photos) Package to detect and extract the video content from the motion photos by [ente](https://ente.io).
+
+**Related Blog** [How to detect Android motion photos in Flutter](https://ente.io/blog/tech/android-motion-photos-flutter/)
 
 ## Features
 
@@ -9,7 +11,7 @@ The Flutter [MotionPhoto](https://support.google.com/googlecamera/answer/9937175
 
 * `getMotionVideo` method returns [Uint8List] bytes for the video content of the motion photo.
 
-* `getMotionVideo` method extracts and returns mp4 file of the video content of the motion photo.
+* `getMotionVideoFile` method extracts and returns mp4 file of the video content of the motion photo.
 
 ## Getting started
 
@@ -17,14 +19,14 @@ To use this package:
 * Add dependency to your [pubspec.yaml](https://flutter.dev/docs/development/packages-and-plugins/using-packages) file either by directly adding the dependency or by using terminal.
    - Via Terminal
   ```
-  flutter pub get motion_photo
+  flutter pub get motion_photos
   ```
   - Or Add the following in pubspec.yaml file
   ```yml
   dependencies:
       flutter:
           sdk: flutter
-      motion_photo:   
+      motion_photos:
    ```
 
 ## Usage
@@ -33,11 +35,11 @@ To use this package:
 
 * Clone the codebase.
     ```sh
-    git clone git@github.com:ente-io/motion_photo.git
+    git clone git@github.com:ente-io/motion_photos.git
     ```
 * Go to example folder.
     ```sh
-    cd /example
+    cd ./example
     ```
 * Run the App.
     ```sh
