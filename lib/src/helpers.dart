@@ -19,8 +19,7 @@ class MotionPhotoHelpers {
           final offsetFromEnd = int.parse(xmpData[offSetKey]);
           if (offSetKey == MotionPhotoConstants.itemLengthOffsetKey) {
             if (offsetFromEnd + offsetFromEnd < size) {
-              print(
-                  'Found ${MotionPhotoConstants.itemLengthOffsetKey} but video length looks invalid');
+              log('Found ${MotionPhotoConstants.itemLengthOffsetKey} but video length looks invalid');
               continue;
             }
           }
