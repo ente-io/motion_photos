@@ -1,3 +1,6 @@
+## 0.0.2
+* Fixed invalid motion photo detection for Pixel Pro 8.
+
 ## 0.0.1
 
 * Features: 
