@@ -1,3 +1,6 @@
+## 0.0.6
+* Fixed invalid motion photo detection for Motion photo Top Shot.
+
 ## 0.0.5
 * Fixed invalid motion photo detection for Pixel Pro 8.
 
