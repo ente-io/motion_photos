@@ -9,6 +9,8 @@ class MotionPhotoConstants {
   ];
 
   static String itemLengthOffsetKey = 'Item:Length';
+  static String GCameraMotionPhoto = 'GCamera:MotionPhoto';
+  static String ItemMimeType = 'Item:MimeType';
 
   ///[fileOffsetKeys] XMP Key for a Motion Photo Video Offset
   static List<String> fileOffsetKeys = [

@@ -15,6 +15,12 @@ void main() {
       expect(await motionPhotos.isMotionPhoto(), true);
     });
 
+    //  https://github.com/ente-io/photos-app/issues/1551
+    test('Pixel 6 Top shot', () async {
+      final motionPhotos = MotionPhotos('assets/pixel_6_small_video.jpg');
+      expect(await motionPhotos.isMotionPhoto(), true);
+    });
+
     test('Not a MotionPhoto', () async {
       final motionPhotos = MotionPhotos('assets/normalphoto.jpg');
       expect(await motionPhotos.isMotionPhoto(), false);
