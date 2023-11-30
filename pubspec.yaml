@@ -1,6 +1,6 @@
 name: motion_photos
 description: A Flutter package for detecting and extracting motionphotos from a image file.
-version: 0.0.5
+version: 0.0.6
 homepage: https://ente.io
 
 environment:

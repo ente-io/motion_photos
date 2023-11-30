@@ -18,7 +18,8 @@ class MotionPhotoHelpers {
         if (xmpData.containsKey(offSetKey)) {
           final offsetFromEnd = int.parse(xmpData[offSetKey]);
           if (offSetKey == MotionPhotoConstants.itemLengthOffsetKey) {
-            if (offsetFromEnd + offsetFromEnd < size) {
+            if (offsetFromEnd + offsetFromEnd < size &&
+                !hasMotionPhotoTags(xmpData)) {
               log('Found ${MotionPhotoConstants.itemLengthOffsetKey} but video length looks invalid');
               continue;
             }
@@ -30,5 +31,17 @@ class MotionPhotoHelpers {
       log(e.toString());
     }
     return null;
+  }
+
+  static bool hasMotionPhotoTags(Map<String, dynamic> xmpData) {
+    if (xmpData.containsKey(MotionPhotoConstants.GCameraMotionPhoto)) {
+      return true;
+    }
+    if (xmpData.containsKey(MotionPhotoConstants.ItemMimeType)) {
+      return xmpData[MotionPhotoConstants.ItemMimeType]
+          .toString()
+          .startsWith('video');
+    }
+    return false;
   }
 }
