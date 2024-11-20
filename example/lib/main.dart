@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:motion_photos/motion_photos.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:video_player/video_player.dart';
 
 void main() {
@@ -73,7 +74,8 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<Widget> _playVideo() async {
     if (isPicked && (_isMotionPhoto ?? false)) {
       try {
-        File file = await motionPhotos.getMotionVideoFile();
+        File file = await motionPhotos
+            .getMotionVideoFile(await getTemporaryDirectory());
         _controller = VideoPlayerController.file(file);
         _controller.initialize();
         _controller.setLooping(true);

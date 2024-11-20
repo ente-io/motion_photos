@@ -5,7 +5,6 @@ import 'package:motion_photos/src/boyermoore_search.dart';
 import 'package:motion_photos/src/constants.dart';
 import 'package:motion_photos/src/helpers.dart';
 import 'package:motion_photos/src/video_index.dart';
-import 'package:path_provider/path_provider.dart';
 
 ///This class is responsible for classifying a file as motion photo,
 ///if so, extracts the [VideoIndex] from the motion photo.
@@ -60,14 +59,18 @@ class MotionPhotos {
   }
 
   // getMotionVideoFile returns the video portion of the motion photo as a file.
-  Future<File> getMotionVideoFile({
-    String fileName = 'motionphoto',
+  // If [index] is not provided, it will be extracted from the file at given {filePath}.
+  // [destDirectory] is the directory where the file will be saved.
+  // [fileName] is the name of the video file that will be created in the [destDirectory].
+  Future<File> getMotionVideoFile(
+    Directory destDirectory, {
+    String fileName = 'motionphoto.mp4',
     VideoIndex? index,
   }) async {
     loadBuffer();
-    Directory tempDir = await getTemporaryDirectory();
+    Directory tempDir = destDirectory;
     Uint8List videoBuffer = await getMotionVideo(index: index);
-    return File('${tempDir.path}/$fileName.mp4').writeAsBytes(
+    return File('${tempDir.path}/$fileName').writeAsBytes(
       videoBuffer,
     );
   }
