@@ -1,4 +1,4 @@
-import 'package:flutter_test/flutter_test.dart';
+import 'package:test/test.dart';
 import 'package:motion_photos/motion_photos.dart';
 import 'package:motion_photos/src/boyermoore_search.dart';
 import 'package:motion_photos/src/constants.dart';
