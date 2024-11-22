@@ -1,7 +1,7 @@
-import 'package:test/test.dart';
 import 'package:motion_photos/motion_photos.dart';
 import 'package:motion_photos/src/boyermoore_search.dart';
 import 'package:motion_photos/src/constants.dart';
+import 'package:test/test.dart';
 
 void main() {
   group('isMotionPhoto', () {

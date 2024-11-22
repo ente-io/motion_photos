@@ -1,3 +1,10 @@
+## 1.0.0
+* Removed flutter dependency.
+
+  ### Breaking Changes
+    - **getMotionVideoFile**: Now requires explicit destination Directory as first parameter (previously used system temp dir)
+
+
 ## 0.0.6
 * Fixed invalid motion photo detection for Motion photo Top Shot.
 

@@ -34,11 +34,11 @@ class MotionPhotoHelpers {
   }
 
   static bool hasMotionPhotoTags(Map<String, dynamic> xmpData) {
-    if (xmpData.containsKey(MotionPhotoConstants.GCameraMotionPhoto)) {
+    if (xmpData.containsKey(MotionPhotoConstants.gCameraMotionPhoto)) {
       return true;
     }
-    if (xmpData.containsKey(MotionPhotoConstants.ItemMimeType)) {
-      return xmpData[MotionPhotoConstants.ItemMimeType]
+    if (xmpData.containsKey(MotionPhotoConstants.itemMimeType)) {
+      return xmpData[MotionPhotoConstants.itemMimeType]
           .toString()
           .startsWith('video');
     }
